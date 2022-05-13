@@ -22,6 +22,16 @@ const getHoursMinutesSeconds = (timeZone: string): number[] => {
   return formattedTime.split(":").map((i) => parseInt(i)) as number[];
 };
 
+const getDigitalTime = (timeZone: string): string => {
+  return Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone,
+  }).format(new Date());
+};
+
 const getArrowDegrees = (
   hours: number,
   minutes: number,
@@ -72,6 +82,7 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
   });
 
   const [calendar, setCalendar] = useState(getDateAndWeekDay(location));
+  const [digitalTime, setDigitalTime] = useState("00:00:00");
 
   useEffect(() => {
     const intervalId = setInterval((): void => {
@@ -81,6 +92,8 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
           getHoursMinutesSeconds(location.timezone) as [number, number, number]
         )
       );
+
+      setDigitalTime(getDigitalTime(location.timezone));
 
       setCalendar(getDateAndWeekDay(location));
     }, 500);
@@ -108,6 +121,7 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
       <StyledHourArrow data-rotate-deg={arrowDegrees.hours} />
       <StyledMinuteArrow data-rotate-deg={arrowDegrees.minutes} />
       <StyledSecondArrow data-rotate-deg={arrowDegrees.seconds} />
+      <StyledDigitalTime>{digitalTime}</StyledDigitalTime>
     </StyledWatchface>
   );
 };
@@ -119,6 +133,7 @@ const StyledWatchface = styled.div`
   margin: 0 auto;
   border: 0.5rem solid #000;
   border-radius: 50%;
+  overflow: hidden;
   background-color: #f0f0f0;
   box-shadow: inset 1rem 1em 1.5rem 0 rgba(0, 0, 0, 0.35),
     inset -1rem -1em 1.5rem 0 rgba(255, 255, 255, 0.35),
@@ -289,5 +304,27 @@ const StyledSecondArrow = styled.i`
     width: 0.4%;
     height: 43%;
     background-color: red;
+  }
+`;
+
+const StyledDigitalTime = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 5rem;
+  font-family: "Roboto";
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 1;
   }
 `;
