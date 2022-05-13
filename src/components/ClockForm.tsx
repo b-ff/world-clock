@@ -78,6 +78,7 @@ const StyledInput = styled.input`
   font-weight: 300;
   outline: none;
   background-color: ${propFromTheme("backgroundPrimaryColor")};
+  color: ${propFromTheme("fontPrimaryColor")};
 
   &::placeholder {
     color: ${propFromTheme("fontSecondaryColor")};
