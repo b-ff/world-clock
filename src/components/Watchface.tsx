@@ -346,7 +346,7 @@ const StyledDigitalTime = styled.div`
   justify-content: center;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.5);
-  color: ${propFromTheme("fontPrimaryColor")};
+  color: #fff;
   font-size: 5rem;
   font-family: "Roboto";
   opacity: 0;
