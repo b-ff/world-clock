@@ -1,5 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import styled from "styled-components";
+import { SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
 
 type WatchfaceProps = {
@@ -209,6 +210,24 @@ const StyledCalendar = styled.div`
   font-family: "Roboto";
   font-weight: 300;
   box-shadow: inset 2px 2px 4px 0 rgba(0, 0, 0, 0.25);
+
+  @media screen and (max-width: ${SCREEN_WIDTH.LARGE}px) {
+    font-size: 1.25rem;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.MEDIUM}px) {
+    font-size: 0.7rem;
+    right: 15%;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.SMALL}px) {
+    font-size: 0.95rem;
+    right: 20%;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+    font-size: 0.8rem;
+  }
 
   &:before,
   &:after {

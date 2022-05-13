@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useCallback, useState } from "react";
 import styled from "styled-components";
-import { API_HOST, LOCATIONS_STORAGE_KEY } from "../config";
+import { API_HOST, LOCATIONS_STORAGE_KEY, SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
 import { ClockForm } from "./ClockForm";
 import { Time } from "./Time";
@@ -63,7 +63,7 @@ const StyledDashboard = styled.main`
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100%;
+  min-height: 100%;
 `;
 
 const StyledClockList = styled.section`
@@ -73,6 +73,27 @@ const StyledClockList = styled.section`
   align-content: center;
   align-items: center;
   flex: 1;
+  max-width: 100%;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+
+  @media screen and (max-width: ${SCREEN_WIDTH.LARGE}px) {
+    flex-direction: row;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.MEDIUM}px) {
+    min-width: 20%;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.SMALL}px) {
+    display: block;
+
+    & > div {
+      display: inline-block;
+    }
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+    flex-direction: column;
+  }
 `;

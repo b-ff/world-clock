@@ -1,5 +1,6 @@
 import React, { FC, ReactElement } from "react";
 import styled from "styled-components";
+import { SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
 import { Watchface } from "./Watchface";
 
@@ -41,6 +42,22 @@ const StyledTime = styled.div`
     opacity: 1;
     pointer-events: inherit;
   }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.LARGE}px) {
+    min-width: auto;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.MEDIUM}px) {
+    min-width: 20%;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.SMALL}px) {
+    min-width: 50%;
+  }
+
+  @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+    min-width: 100%;
+  }
 `;
 
 const StyledWatch = styled.div`
@@ -55,18 +72,33 @@ const StyledTitle = styled.h2`
   text-align: center;
   font-size: 2rem;
   margin: 0;
-  padding: 1rem;
+  padding: 1rem 0;
+
+  @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+    padding: 0.5rem 0;
+  }
 
   small {
     font-size: 1rem;
     font-weight: 100em;
     margin-top: 1rem;
+
+    @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+      margin: 0 0 0.5rem;
+    }
   }
 `;
 
 const StyledDescription = styled.p`
   font-size: 0.75rem;
   color: #aaa;
+  text-align: center;
+
+  @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 0.8rem;
+  }
 `;
 
 const StyledRemoveLink = styled.a`
