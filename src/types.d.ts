@@ -1,3 +1,5 @@
+import { DARK_THEME_KEY, LIGHT_THEME_KEY } from "./config";
+
 export interface ILocation {
   city: string;
   city_ascii: string;
@@ -11,4 +13,15 @@ export interface ILocation {
   timezone: string;
   isDST: boolean;
   utcOffset: number;
+}
+
+export interface ITheme {
+  backgroundPrimaryColor: string;
+  backgroundSecondaryColor: string;
+  fontPrimaryColor: string;
+  fontSecondaryColor: string;
+  borderPrimaryColor: string;
+  borderSecondaryColor: string;
+  shadowLightenColor: string;
+  shadowDarkenColor: string;
 }

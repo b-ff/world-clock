@@ -2,7 +2,9 @@ import React, { FC, ReactElement, useCallback, useState } from "react";
 import styled from "styled-components";
 import { API_HOST, LOCATIONS_STORAGE_KEY, SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
+import { noop } from "../utils";
 import { ClockForm } from "./ClockForm";
+import { ThemeToggle } from "./ThemeToggle";
 import { Time } from "./Time";
 
 const requestLocations = (location: string): Promise<ILocation> => {
@@ -16,7 +18,13 @@ const requestLocations = (location: string): Promise<ILocation> => {
   });
 };
 
-export const Dashboard: FC = (): ReactElement => {
+type DashboardProps = {
+  onToggleTheme: () => void;
+};
+
+export const Dashboard: FC<DashboardProps> = ({
+  onToggleTheme = noop,
+}): ReactElement => {
   const storedLocations = JSON.parse(
     localStorage.getItem(LOCATIONS_STORAGE_KEY) || "[]"
   ) as ILocation[];
@@ -43,6 +51,9 @@ export const Dashboard: FC = (): ReactElement => {
 
   return (
     <StyledDashboard>
+      <StyledToolbar>
+        <ThemeToggle onToggle={onToggleTheme} />
+      </StyledToolbar>
       <StyledClockList>
         {locations.map(
           (location: ILocation, idx: number): ReactElement => (
@@ -64,6 +75,13 @@ const StyledDashboard = styled.main`
   flex-direction: column;
   width: 100vw;
   min-height: 100%;
+`;
+
+const StyledToolbar = styled.section`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 1rem 0.75rem;
 `;
 
 const StyledClockList = styled.section`

@@ -1,7 +1,18 @@
-import React, { FC, ReactElement } from "react";
-import { createGlobalStyle } from "styled-components";
+import React, { FC, ReactElement, useCallback, useState } from "react";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Dashboard } from "../components/Dashboard";
-import { SCREEN_WIDTH } from "../config";
+import {
+  DARK_THEME_KEY,
+  DEFAULT_THEME,
+  LIGHT_THEME_KEY,
+  SCREEN_WIDTH,
+  THEME_STORAGE_KEY,
+} from "../config";
+import { DarkTheme } from "../themes/dark";
+import { LightTheme } from "../themes/light";
+import { propFromTheme } from "../utils";
+
+const storedThemeKey = localStorage.getItem(THEME_STORAGE_KEY) || DEFAULT_THEME;
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -15,6 +26,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 16px;
     font-weight: 200;
+    color: ${propFromTheme("fontPrimaryColor")};
+    background-color: ${propFromTheme("backgroundPrimaryColor")};
 
     @media screen and (max-width: ${SCREEN_WIDTH.LARGE}px) {
       font-size: 14px;
@@ -42,9 +55,20 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const App: FC = (): ReactElement => (
-  <>
-    <GlobalStyle />
-    <Dashboard />
-  </>
-);
+export const App: FC = (): ReactElement => {
+  const [theme, setTheme] = useState(storedThemeKey);
+
+  const toggleTheme = useCallback(() => {
+    const updatedValue =
+      theme === LIGHT_THEME_KEY ? DARK_THEME_KEY : LIGHT_THEME_KEY;
+    setTheme(updatedValue);
+    localStorage.setItem(THEME_STORAGE_KEY, updatedValue);
+  }, [theme, setTheme]);
+
+  return (
+    <ThemeProvider theme={theme === LIGHT_THEME_KEY ? LightTheme : DarkTheme}>
+      <Dashboard onToggleTheme={toggleTheme} />
+      <GlobalStyle />
+    </ThemeProvider>
+  );
+};

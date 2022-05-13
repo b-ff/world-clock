@@ -2,6 +2,7 @@ import React, { FC, ReactElement, useEffect, useState } from "react";
 import styled from "styled-components";
 import { SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
+import { propFromTheme } from "../utils";
 
 type WatchfaceProps = {
   location: ILocation;
@@ -132,13 +133,13 @@ const StyledWatchface = styled.div`
   width: 100%;
   padding-top: 100%;
   margin: 0 auto;
-  border: 0.5rem solid #000;
+  border: 0.5rem solid ${propFromTheme("borderPrimaryColor")};
   border-radius: 50%;
   overflow: hidden;
-  background-color: #f0f0f0;
-  box-shadow: inset 1rem 1em 1.5rem 0 rgba(0, 0, 0, 0.35),
-    inset -1rem -1em 1.5rem 0 rgba(255, 255, 255, 0.35),
-    1rem 1em 1.5rem 0 rgba(0, 0, 0, 0.35);
+  background-color: ${propFromTheme("backgroundSecondaryColor")};
+  box-shadow: inset 1rem 1em 1.5rem 0 ${propFromTheme("shadowDarkenColor")},
+    inset -1rem -1em 1.5rem 0 ${propFromTheme("shadowLightenColor")},
+    1rem 1em 1.5rem 0 ${propFromTheme("shadowDarkenColor")};
 
   &:after {
     position: absolute;
@@ -149,7 +150,7 @@ const StyledWatchface = styled.div`
     width: 1.75%;
     height: 1.75%;
     transform: translate(-50%, -50%);
-    background-color: #000;
+    background-color: ${propFromTheme("borderPrimaryColor")};
     border-radius: 50%;
   }
 `;
@@ -170,7 +171,7 @@ const StyledHourMark = styled.div`
     content: " ";
     width: 0.5%;
     height: 5%;
-    background-color: #000;
+    background-color: ${propFromTheme("borderPrimaryColor")};
     transform: translateX(-50%);
   }
 `;
@@ -191,7 +192,7 @@ const StyledMinuteMark = styled.div`
     content: " ";
     width: 0.125%;
     height: 1%;
-    background-color: #000;
+    background-color: ${propFromTheme("borderPrimaryColor")};
     opacity: 0.5;
     transform: translateX(-50%);
   }
@@ -203,7 +204,7 @@ const StyledCalendar = styled.div`
   right: 20%;
   text-transform: uppercase;
   transform: translate(0, -50%);
-  border: 2px solid #000;
+  border: 2px solid ${propFromTheme("borderPrimaryColor")};
   border-radius: 3px;
   box-sizing: border-box;
   font-size: 1.25rem;
@@ -252,7 +253,7 @@ const StyledCalendar = styled.div`
   & span {
     display: inline-block;
     padding: 0 4px;
-    border-right: 2px solid #000;
+    border-right: 2px solid ${propFromTheme("borderPrimaryColor")};
   }
 
   & span:last-of-type {
@@ -279,7 +280,7 @@ const StyledHourArrow = styled.i`
     content: " ";
     width: 1.75%;
     height: 25%;
-    background-color: #000;
+    background-color: ${propFromTheme("borderPrimaryColor")};
   }
 `;
 
@@ -300,7 +301,7 @@ const StyledMinuteArrow = styled.i`
     content: " ";
     width: 0.75%;
     height: 35%;
-    background-color: #000;
+    background-color: ${propFromTheme("borderPrimaryColor")};
   }
 `;
 
@@ -337,7 +338,7 @@ const StyledDigitalTime = styled.div`
   justify-content: center;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  color: ${propFromTheme("fontPrimaryColor")};
   font-size: 5rem;
   font-family: "Roboto";
   opacity: 0;

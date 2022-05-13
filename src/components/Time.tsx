@@ -2,6 +2,7 @@ import React, { FC, ReactElement } from "react";
 import styled from "styled-components";
 import { SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
+import { propFromTheme } from "../utils";
 import { Watchface } from "./Watchface";
 
 type TimeProps = {
@@ -91,7 +92,7 @@ const StyledTitle = styled.h2`
 
 const StyledDescription = styled.p`
   font-size: 0.75rem;
-  color: #aaa;
+  color: ${propFromTheme("fontSecondaryColor")};
   text-align: center;
 
   @media screen and (max-width: ${SCREEN_WIDTH.XSMALL}px) {
@@ -105,7 +106,7 @@ const StyledRemoveLink = styled.a`
   position: absolute;
   top: 0;
   right: 0;
-  color: #ccc;
+  color: ${propFromTheme("fontSecondaryColor")};
   font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
