@@ -90,10 +90,6 @@ const StyledDashboard = styled.main`
   flex-direction: column;
   width: 100vw;
   min-height: 100%;
-
-  & button {
-    margin-left: 0.5rem;
-  }
 `;
 
 const StyledToolbar = styled.section`
@@ -101,6 +97,10 @@ const StyledToolbar = styled.section`
   flex-direction: row;
   justify-content: flex-end;
   padding: 1rem 0.75rem;
+
+  & button {
+    margin-left: 0.5rem;
+  }
 `;
 
 const StyledClockList = styled.section`
