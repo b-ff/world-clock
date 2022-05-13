@@ -37,7 +37,6 @@ export const Dashboard: FC<DashboardProps> = ({
       locations.every(({ city }) => queryLocations.includes(city));
 
     if (queryLocations.length && !allQueryLocationsShown) {
-      console.log(132, "run batch!");
       Promise.all(queryLocations.map(requestLocations)).then(
         (batchResponse) => {
           setLocations(batchResponse);
