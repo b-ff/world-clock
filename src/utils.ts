@@ -73,13 +73,25 @@ export const getDateAndWeekDay = (
   };
 };
 
+export const getRotationDegreeFromElementStyle = (
+  element: HTMLElement
+): number => {
+  const transformValue = element.style.transform;
+  const degree = `${(transformValue.match(/^rotate\((.+)deg\)/) || [0]).pop()}`;
+  return degree ? parseFloat(degree) : 0;
+};
+
 export const rotateRefElement = (
   ref: RefObject<HTMLElement>,
   degree: number
 ): void => {
   if (ref.current) {
     const element = ref.current as HTMLElement;
-    element.style.transform = `rotate(${degree}deg)`;
+    const currentDegree: number = getRotationDegreeFromElementStyle(element);
+    const safeDegree =
+      currentDegree + ((degree ? degree % 360 : 360) - (currentDegree % 360));
+
+    element.style.transform = `rotate(${safeDegree}deg)`;
   } else {
     console.error("No Ref Element!");
   }

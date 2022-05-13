@@ -28,14 +28,19 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
 
   useEffect(() => {
     const intervalId = setInterval((): void => {
-      const { hours, minutes, seconds } = getArrowDegrees.apply(
-        null,
-        getHoursMinutesSeconds(location.timezone) as TTimeParts
+      const [hours, minutes, seconds]: TTimeParts = getHoursMinutesSeconds(
+        location.timezone
       );
 
-      rotateRefElement(hourArrowRef, hours);
-      rotateRefElement(minuteArrowRef, minutes);
-      rotateRefElement(secondArrowRef, seconds);
+      const {
+        hours: hoursDegree,
+        minutes: minutesDegree,
+        seconds: secondsDegree,
+      } = getArrowDegrees(hours, minutes, seconds);
+
+      rotateRefElement(hourArrowRef, hoursDegree);
+      rotateRefElement(minuteArrowRef, minutesDegree);
+      rotateRefElement(secondArrowRef, secondsDegree);
 
       setDigitalTime(getDigitalTime(location.timezone));
       setCalendar(getDateAndWeekDay(location));
@@ -251,7 +256,7 @@ const StyledSecondArrow = styled.i`
   left: 0;
   width: 100%;
   height: 100%;
-  /* transition: all 0.3s cubic-bezier(0.08, 1.47, 0.65, 0.92); */
+  transition: transform 0.3s cubic-bezier(0.08, 1.47, 0.65, 0.92);
 
   &:after {
     position: absolute;
