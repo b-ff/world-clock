@@ -1,4 +1,5 @@
 import { RefObject } from "react";
+import { API_HOST } from "./config";
 import { ILocation, ITheme, TTimeParts } from "./types";
 
 export const noop = (): void => {};
@@ -95,4 +96,27 @@ export const rotateRefElement = (
   } else {
     console.error("No Ref Element!");
   }
+};
+
+export const requestLocations = (location: string): Promise<ILocation> => {
+  const url = `${API_HOST}${location}`;
+
+  return fetch(url).then((response: Response): Promise<ILocation> => {
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json();
+  });
+};
+
+export const getLocationsFromQueryString = (): string[] => {
+  const { locations } = Object.fromEntries(
+    new URLSearchParams(window.location.search)
+  );
+
+  if (locations) {
+    return locations.split(",").map((l) => decodeURIComponent(l.trim()));
+  }
+
+  return [];
 };

@@ -1,22 +1,24 @@
-import React, { FC, ReactElement, useCallback, useState } from "react";
+import React, {
+  FC,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
-import { API_HOST, LOCATIONS_STORAGE_KEY, SCREEN_WIDTH } from "../config";
+import { LOCATIONS_STORAGE_KEY, SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
-import { noop } from "../utils";
+import { getLocationsFromQueryString, noop, requestLocations } from "../utils";
 import { ClockForm } from "./ClockForm";
+import { ShareButton } from "./ShareButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { Time } from "./Time";
 
-const requestLocations = (location: string): Promise<ILocation> => {
-  const url = `${API_HOST}${location}`;
+const storedLocations = JSON.parse(
+  localStorage.getItem(LOCATIONS_STORAGE_KEY) || "[]"
+) as ILocation[];
 
-  return fetch(url).then((response: Response): Promise<ILocation> => {
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    return response.json();
-  });
-};
+const queryLocations: string[] = getLocationsFromQueryString();
 
 type DashboardProps = {
   onToggleTheme: () => void;
@@ -25,11 +27,24 @@ type DashboardProps = {
 export const Dashboard: FC<DashboardProps> = ({
   onToggleTheme = noop,
 }): ReactElement => {
-  const storedLocations = JSON.parse(
-    localStorage.getItem(LOCATIONS_STORAGE_KEY) || "[]"
-  ) as ILocation[];
+  const [locations, setLocations] = useState(
+    queryLocations.length ? [] : storedLocations
+  );
 
-  const [locations, setLocations] = useState(storedLocations);
+  useEffect(() => {
+    const allQueryLocationsShown =
+      locations.length &&
+      locations.every(({ city }) => queryLocations.includes(city));
+
+    if (queryLocations.length && !allQueryLocationsShown) {
+      console.log(132, "run batch!");
+      Promise.all(queryLocations.map(requestLocations)).then(
+        (batchResponse) => {
+          setLocations(batchResponse);
+        }
+      );
+    }
+  }, [locations]);
 
   const handleSubmit: (input: string) => void = useCallback(
     (input: string) => {
@@ -52,6 +67,7 @@ export const Dashboard: FC<DashboardProps> = ({
   return (
     <StyledDashboard>
       <StyledToolbar>
+        <ShareButton locations={locations} />
         <ThemeToggle onToggle={onToggleTheme} />
       </StyledToolbar>
       <StyledClockList>
@@ -75,6 +91,10 @@ const StyledDashboard = styled.main`
   flex-direction: column;
   width: 100vw;
   min-height: 100%;
+
+  & button {
+    margin-left: 0.5rem;
+  }
 `;
 
 const StyledToolbar = styled.section`
