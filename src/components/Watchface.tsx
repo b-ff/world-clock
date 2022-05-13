@@ -1,76 +1,18 @@
 import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SCREEN_WIDTH } from "../config";
-import { ILocation } from "../types";
-import { propFromTheme } from "../utils";
+import { ILocation, TTimeParts } from "../types";
+import {
+  getArrowDegrees,
+  getDateAndWeekDay,
+  getDigitalTime,
+  getHoursMinutesSeconds,
+  propFromTheme,
+  rotateRefElement,
+} from "../utils";
 
 type WatchfaceProps = {
   location: ILocation;
-};
-
-const getHoursMinutesSeconds = (timeZone: string): number[] => {
-  const formattedTime =
-    Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
-      timeZone,
-    })
-      .format(new Date())
-      .split(" ")
-      .shift() || "";
-
-  return formattedTime.split(":").map((i) => parseInt(i)) as number[];
-};
-
-const getDigitalTime = (timeZone: string): string => {
-  return Intl.DateTimeFormat("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZone,
-  }).format(new Date());
-};
-
-const getArrowDegrees = (
-  hours: number,
-  minutes: number,
-  seconds: number
-): { hours: number; minutes: number; seconds: number } => {
-  const hourStep = 360 / 12;
-  const minuteStep = 360 / 60;
-
-  const hourDeg =
-    hourStep * hours +
-    (hourStep / 60) * minutes +
-    (hourStep / 60 / 60) * seconds;
-
-  const minDeg = minuteStep * minutes + (minuteStep / 60) * seconds;
-  const secDeg = minuteStep * seconds;
-
-  return {
-    hours: hourDeg,
-    minutes: minDeg,
-    seconds: secDeg,
-  };
-};
-
-const getDateAndWeekDay = (
-  location: ILocation
-): { date: number; weekday: string } => {
-  const formattedString = Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    weekday: "short",
-    timeZone: location.timezone,
-  }).format(Date.now());
-
-  const [date, weekday] = formattedString.split(" ");
-  return {
-    date: parseInt(date),
-    weekday,
-  };
 };
 
 export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
@@ -88,23 +30,12 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
     const intervalId = setInterval((): void => {
       const { hours, minutes, seconds } = getArrowDegrees.apply(
         null,
-        getHoursMinutesSeconds(location.timezone) as [number, number, number]
+        getHoursMinutesSeconds(location.timezone) as TTimeParts
       );
 
-      if (hourArrowRef.current) {
-        const hourArrow = hourArrowRef.current as HTMLElement;
-        hourArrow.style.transform = `rotate(${hours}deg)`;
-      }
-
-      if (minuteArrowRef.current) {
-        const minuteArrow = minuteArrowRef.current as HTMLElement;
-        minuteArrow.style.transform = `rotate(${minutes}deg)`;
-      }
-
-      if (secondArrowRef.current) {
-        const secondArrow = secondArrowRef.current as HTMLElement;
-        secondArrow.style.transform = `rotate(${seconds}deg)`;
-      }
+      rotateRefElement(hourArrowRef, hours);
+      rotateRefElement(minuteArrowRef, minutes);
+      rotateRefElement(secondArrowRef, seconds);
 
       setDigitalTime(getDigitalTime(location.timezone));
       setCalendar(getDateAndWeekDay(location));

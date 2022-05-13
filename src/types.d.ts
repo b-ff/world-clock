@@ -25,3 +25,5 @@ export interface ITheme {
   shadowLightenColor: string;
   shadowDarkenColor: string;
 }
+
+export type TTimeParts = [number, number, number];
