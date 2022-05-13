@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SCREEN_WIDTH } from "../config";
 import { ILocation } from "../types";
@@ -74,45 +74,58 @@ const getDateAndWeekDay = (
 };
 
 export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
+  const hourArrowRef = useRef(null);
+  const minuteArrowRef = useRef(null);
+  const secondArrowRef = useRef(null);
+
   const hourMarks = new Array(12).fill(null);
   const minuteMarks = new Array(60).fill(null);
-
-  const [arrowDegrees, setArrowDegrees] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
 
   const [calendar, setCalendar] = useState(getDateAndWeekDay(location));
   const [digitalTime, setDigitalTime] = useState("00:00:00");
 
   useEffect(() => {
     const intervalId = setInterval((): void => {
-      setArrowDegrees(
-        getArrowDegrees.apply(
-          null,
-          getHoursMinutesSeconds(location.timezone) as [number, number, number]
-        )
+      const { hours, minutes, seconds } = getArrowDegrees.apply(
+        null,
+        getHoursMinutesSeconds(location.timezone) as [number, number, number]
       );
 
-      setDigitalTime(getDigitalTime(location.timezone));
+      if (hourArrowRef.current) {
+        const hourArrow = hourArrowRef.current as HTMLElement;
+        hourArrow.style.transform = `rotate(${hours}deg)`;
+      }
 
+      if (minuteArrowRef.current) {
+        const minuteArrow = minuteArrowRef.current as HTMLElement;
+        minuteArrow.style.transform = `rotate(${minutes}deg)`;
+      }
+
+      if (secondArrowRef.current) {
+        const secondArrow = secondArrowRef.current as HTMLElement;
+        secondArrow.style.transform = `rotate(${seconds}deg)`;
+      }
+
+      setDigitalTime(getDigitalTime(location.timezone));
       setCalendar(getDateAndWeekDay(location));
-    }, 500);
+    }, 1000);
 
     return (): void => {
       clearInterval(intervalId);
     };
-  }, [location, setArrowDegrees]);
+  }, [location]);
 
   return (
     <StyledWatchface>
       {hourMarks.map((item, idx, arr) => (
-        <StyledHourMark data-rotate-deg={(360 / arr.length) * idx} key={idx} />
+        <StyledHourMark
+          style={{ transform: `rotate(${(360 / arr.length) * idx}deg)` }}
+          key={idx}
+        />
       ))}
       {minuteMarks.map((item, idx, arr) => (
         <StyledMinuteMark
-          data-rotate-deg={(360 / arr.length) * idx}
+          style={{ transform: `rotate(${(360 / arr.length) * idx}deg)` }}
           key={idx}
         />
       ))}
@@ -120,9 +133,9 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
         <span>{calendar?.weekday}</span>
         <span>{calendar?.date}</span>
       </StyledCalendar>
-      <StyledHourArrow data-rotate-deg={arrowDegrees.hours} />
-      <StyledMinuteArrow data-rotate-deg={arrowDegrees.minutes} />
-      <StyledSecondArrow data-rotate-deg={arrowDegrees.seconds} />
+      <StyledHourArrow ref={hourArrowRef} />
+      <StyledMinuteArrow ref={minuteArrowRef} />
+      <StyledSecondArrow ref={secondArrowRef} />
       <StyledDigitalTime>{digitalTime}</StyledDigitalTime>
     </StyledWatchface>
   );
@@ -161,7 +174,6 @@ const StyledHourMark = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: ${(props: any) => `rotate(${props["data-rotate-deg"]}deg)`};
 
   &:after {
     position: absolute;
@@ -182,7 +194,6 @@ const StyledMinuteMark = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: ${(props: any) => `rotate(${props["data-rotate-deg"]}deg)`};
 
   &:after {
     position: absolute;
@@ -269,7 +280,6 @@ const StyledHourArrow = styled.i`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: ${(props: any) => `rotate(${props["data-rotate-deg"]}deg)`};
 
   &:after {
     position: absolute;
@@ -290,7 +300,6 @@ const StyledMinuteArrow = styled.i`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: ${(props: any) => `rotate(${props["data-rotate-deg"]}deg)`};
 
   &:after {
     position: absolute;
@@ -311,7 +320,6 @@ const StyledSecondArrow = styled.i`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: ${(props: any) => `rotate(${props["data-rotate-deg"]}deg)`};
   /* transition: all 0.3s cubic-bezier(0.08, 1.47, 0.65, 0.92); */
 
   &:after {
