@@ -72,7 +72,9 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
       <StyledHourArrow ref={hourArrowRef} />
       <StyledMinuteArrow ref={minuteArrowRef} />
       <StyledSecondArrow ref={secondArrowRef} />
-      <StyledDigitalTime>{digitalTime}</StyledDigitalTime>
+      <StyledDigitalTime>
+        {digitalTime.replace(/^24:/, "00:")}
+      </StyledDigitalTime>
     </StyledWatchface>
   );
 };
