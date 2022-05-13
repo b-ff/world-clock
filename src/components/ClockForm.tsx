@@ -40,6 +40,7 @@ export const ClockForm: FC<ClockFormType> = ({ onSubmit }): ReactElement => {
           name="location"
           placeholder="Type location name..."
           ref={inputRef}
+          required
         />
         <StyledSubmit>Add</StyledSubmit>
       </StyledFieldset>
@@ -52,7 +53,7 @@ const StyledClockForm = styled.form`
   flex-direction: column;
   align-items: center;
   margin: 0;
-  padding: 2rem 0;
+  padding: 7rem 0;
 `;
 
 const StyledFieldset = styled.fieldset`
@@ -62,6 +63,33 @@ const StyledFieldset = styled.fieldset`
   outline: none;
 `;
 
-const StyledInput = styled.input``;
+const StyledInput = styled.input`
+  padding: 1rem 1.25rem;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 0.35rem 0 0 0.35rem;
+  box-shadow: inset 0.125rem 0.125rem 0.5rem 0 rgba(0, 0, 0, 0.25);
+  font-family: "Roboto";
+  font-weight: 300;
+  outline: none;
 
-const StyledSubmit = styled.button``;
+  &::placeholder {
+    color: #ccc;
+  }
+`;
+
+const StyledSubmit = styled.button`
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  background: transparent;
+  border-radius: 0 0.35rem 0.35rem 0;
+  box-shadow: inset -0.125rem -0.125rem 0.5rem 0 rgba(0, 0, 0, 0.125);
+  color: #777;
+  cursor: pointer;
+
+  &:active {
+    box-shadow: inset 0.125rem 0.125rem 0.5rem 0 rgba(0, 0, 0, 0.125);
+  }
+`;
