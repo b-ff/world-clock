@@ -21,7 +21,6 @@ export const ShareButton: FC<ShareButtonProps> = ({
     navigator.clipboard.writeText(
       `${window.location.origin}/?${queryParams.toString()}`
     );
-    // alert("Copied to clipboard!");
   }, [locations]);
   return (
     <StyledShareButton onClick={handleShareClick}>
