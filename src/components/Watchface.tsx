@@ -45,6 +45,22 @@ const getArrowDegrees = (
   };
 };
 
+const getDateAndWeekDay = (
+  location: ILocation
+): { date: number; weekday: string } => {
+  const formattedString = Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    weekday: "short",
+    timeZone: location.timezone,
+  }).format(Date.now());
+
+  const [date, weekday] = formattedString.split(" ");
+  return {
+    date: parseInt(date),
+    weekday,
+  };
+};
+
 export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
   const hourMarks = new Array(12).fill(null);
   const minuteMarks = new Array(60).fill(null);
@@ -55,6 +71,8 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
     seconds: 0,
   });
 
+  const [calendar, setCalendar] = useState(getDateAndWeekDay(location));
+
   useEffect(() => {
     const intervalId = setInterval((): void => {
       setArrowDegrees(
@@ -63,6 +81,8 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
           getHoursMinutesSeconds(location.timezone) as [number, number, number]
         )
       );
+
+      setCalendar(getDateAndWeekDay(location));
     }, 500);
 
     return (): void => {
@@ -81,6 +101,10 @@ export const Watchface: FC<WatchfaceProps> = ({ location }): ReactElement => {
           key={idx}
         />
       ))}
+      <StyledCalendar>
+        <span>{calendar?.weekday}</span>
+        <span>{calendar?.date}</span>
+      </StyledCalendar>
       <StyledHourArrow data-rotate-deg={arrowDegrees.hours} />
       <StyledMinuteArrow data-rotate-deg={arrowDegrees.minutes} />
       <StyledSecondArrow data-rotate-deg={arrowDegrees.seconds} />
@@ -154,6 +178,53 @@ const StyledMinuteMark = styled.div`
     background-color: #000;
     opacity: 0.5;
     transform: translateX(-50%);
+  }
+`;
+
+const StyledCalendar = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 20%;
+  text-transform: uppercase;
+  transform: translate(0, -50%);
+  border: 2px solid #000;
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 1.25rem;
+  font-family: "Roboto";
+  font-weight: 300;
+  box-shadow: inset 2px 2px 4px 0 rgba(0, 0, 0, 0.25);
+
+  &:before,
+  &:after {
+    position: absolute;
+    display: block;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  &:before {
+    box-shadow: inset 0 5px 5px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  &:after {
+    box-shadow: inset 0 -5px 5px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  & span {
+    display: inline-block;
+    padding: 0 4px;
+    border-right: 2px solid #000;
+  }
+
+  & span:last-of-type {
+    background-color: #444;
+    color: #fff;
+    border-right: none;
   }
 `;
 
