@@ -1,5 +1,3 @@
-import { DARK_THEME_KEY, LIGHT_THEME_KEY } from "./config";
-
 export interface ILocation {
   city: string;
   city_ascii: string;
